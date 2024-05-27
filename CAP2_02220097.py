@@ -77,7 +77,6 @@ def get_account_by_number(account_number):
             return account
     return None
 
-
 def login(account_number, password):
     account = get_account_by_number(account_number)
     if account and account.password == password:
@@ -98,12 +97,12 @@ def delete_account(account_number, password):
     return False
 
 def transfer_funds(from_account_number, to_account_number, amount):
+    accounts = load_accounts()
     from_account = get_account_by_number(from_account_number)
     to_account = get_account_by_number(to_account_number)
     if from_account and to_account:
         if from_account.withdraw(amount):
             to_account.deposit(amount)
-            accounts = load_accounts()
             for i, account in enumerate(accounts):
                 if account.account_number == from_account_number:
                     accounts[i] = from_account
@@ -112,11 +111,10 @@ def transfer_funds(from_account_number, to_account_number, amount):
             save_all_accounts(accounts)
             return True
         else:
-            print("You don't have enough balance to finish the transfer.")
+            print("You have insufficient balance to complete the transfer.")
             return False
-    print("There is no one using the account.")
+    print("The recipient account does not exist.")
     return False
-
 
 def main():
     while True:
@@ -171,7 +169,7 @@ def main():
                             print("Invalid deposit amount!")
 
                     elif sub_choice == '3':
-                        amount = float(input("Enter the desired withdrawal amount.: "))
+                        amount = float(input("Enter the desired withdrawal amount: "))
                         if account.withdraw(amount):
                             accounts = load_accounts()
                             for i, acc in enumerate(accounts):
@@ -188,31 +186,30 @@ def main():
                         if transfer_funds(account.account_number, to_account_number, amount):
                             print(f"Transfer successful! Your new account balance is: {account.balance}")
                         else:
-                            print("Transfer failed! You don't have enough balance.")
+                            print("Transfer failed! You have insufficient balance to complete the transfer.")
 
                     elif sub_choice == '5':
                         if delete_account(account.account_number, password):
                             print("Account deleted successfully!")
                             break
                         else:
-                            print("Failed to delete account! Incorrect credentials.")
+                            print("Account deletion was unsuccessful! The wrong identification.")
 
                     elif sub_choice == '6':
                         print("Logged out successfully!")
                         break
 
                     else:
-                        print("Invalid choice! Please try again.")
+                        print("Not a valid option! Please give it another go.")
             else:
-                print("Login failed! Check your account number and password.")
+                print("Login failed! Verify the password and account number you have.")
 
         elif choice == '3':
-            print("Exiting the application. Goodbye!")
+            print("Closing the application. Farewell!")
             break
 
         else:
-            print("Invalid choice! Please try again.")
+            print("Not a valid option! Kindly give it another shot.")
 
 if __name__ == "__main__":
     main()
-
